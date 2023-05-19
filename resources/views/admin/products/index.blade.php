@@ -35,7 +35,7 @@
                                         <img src="{{ asset('images/products/'. $item->image) }}" alt="Product Image"
                                             width="80">
                                     @endif
-                                </td>   
+                                </td>
                                 <td>
                                     <a href="{{ url('admin/products/' . $item->id . '/edit') }}"
                                         class="btn btn-primary">Edit</a>

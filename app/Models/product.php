@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
 {
@@ -15,7 +16,7 @@ class Product extends Model
         'name',
         'slug',
         'price',
-        'image'
+        'images' // Update the attribute name to 'images'
     ];
 
     public function category()
@@ -24,29 +25,56 @@ class Product extends Model
     }
 
     /**
-     * Set the image attribute and upload the file to the storage disk.
+     * Set the images attribute and upload the files to the storage disk.
      *
      * @param mixed $value
      * @return void
      */
-    public function setImageAttribute($value)
+    public function setImagesAttribute($value)
     {
-        $attributeName = "image";
+        $attributeName = "images";
         $disk = "public";
         $destinationPath = "images/products";
 
-        // If the value is not a file, it means we're updating the product and don't want to upload a new image
-        if (!is_file($value)) {
+        // If the value is not an array, it means we're updating the product and don't want to upload new images
+        if (!is_array($value)) {
             return $this->attributes[$attributeName] = $value;
         }
 
-        // Generate a unique filename for the image
-        $filename = Str::random(20) . '.' . $value->getClientOriginalExtension();
+        $uploadedImages = [];
 
-        // Upload the image to the storage disk
-        $path = $value->storeAs($destinationPath, $filename, $disk);
+        foreach ($value as $image) {
+            // Generate a unique filename for the image
+            $filename = Str::random(20) . '.' . $image->getClientOriginalExtension();
 
-        // Set the image attribute to the path of the uploaded image
-        $this->attributes[$attributeName] = $path;
+            // Upload the image to the storage disk
+            $path = $image->storeAs($destinationPath, $filename, $disk);
+
+            // Add the image path to the array of uploaded images
+            $uploadedImages[] = $path;
+        }
+
+        // Set the images attribute to the array of uploaded image paths
+        $this->attributes[$attributeName] = $uploadedImages;
+    }
+
+    /**
+     * Get the full URL for the images attribute.
+     *
+     * @return string|null
+     */
+    public function getImagesAttribute()
+    {
+        $images = $this->attributes['images'];
+
+        if (is_array($images)) {
+            $urlArray = [];
+            foreach ($images as $image) {
+                $urlArray[] = Storage::url($image);
+            }
+            return $urlArray;
+        }
+
+        return null;
     }
 }

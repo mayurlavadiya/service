@@ -14,7 +14,8 @@
                 <div class="card-body">
                     <form action="{{url('admin/products')}}" method="POST" enctype="multipart/form-data" >
                     @csrf
-                    <div class="mb-3">
+
+                    {{-- <div class="mb-3">
                         <label for="">Select Category</label>
                         <select name="category_id" class="form-control">
                             @foreach ($categories as $item)
@@ -22,10 +23,9 @@
 
                             @endforeach
                         </select>
-                    </div>
+                    </div> --}}
 
-
-        {{-- CHECKBOX SELECTED CATEGORIES
+        {{-- CHECKBOX SELECTED CATEGORIES --}}
 
             <div class="mb-3">
             <label>Select Category</label><br>
@@ -34,7 +34,7 @@
                 <input class="form-check-input" type="checkbox" name="categories[]" value="{{$item->id}}"> {{$item->name}}
                 </label>&nbsp;&nbsp;
             @endforeach
-            </div> --}}
+            </div>
 
             <input type="hidden" name="category_id" value="{{ $categories->first()->id }}">
 
@@ -50,7 +50,7 @@
 
                         <div class="mb-3">
                             <label for="">Product Images</label>
-                            <input type="file" name="image" class="form-control" required>
+                            <input type="file" name="images[]" class="form-control" multiple required>
                         </div>
 
 

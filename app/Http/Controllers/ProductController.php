@@ -6,6 +6,8 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Image;
+
 
 class ProductController extends Controller
 {
@@ -24,31 +26,35 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $category = Category::findOrFail($request->category_id);
-    
         $product = new Product;
+        $product->id = $request->id;
         $product->name = $request->name;
         $product->slug = Str::slug($request->slug);
         $product->price = $request->price;
-    
-        // Check if an image is uploaded
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            // Check if the uploaded file is valid
-            if ($image->isValid()) {
-                $fileName = time() . '_' . $image->getClientOriginalName();
-                $image->move(public_path('images/products'), $fileName);
-                $product->image = $fileName;
-            } else {
-                return redirect()->back()->withErrors(['error' => 'Invalid file uploaded.']);
+
+
+        if($request->hasFile("images"))
+        {
+            $files = $request->file("images");
+            foreach($files as $file){
+                $imagename = time() . '_' . $file->getClientOriginalName();
+                $request['product_id']=$product->id;
+                $request['image']=$imagename;
+                $file->move(public_path('images/products'), $imagename);
+                Image::create($request->all());
             }
         }
-    
+
         $product->category()->associate($category);
         $product->save();
-    
+
         return redirect('admin/products')->with('message', 'Product added successfully.');
     }
-    
+
+    public function images(){
+        return $this->hasMany(Image::class);
+    }
+
     public function edit($product_id)
     {
         $categories = Category::all();
