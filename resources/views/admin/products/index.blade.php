@@ -31,10 +31,11 @@
                                 <td>{{ $item->name }}</td>
                                 <td>{{ $item->price }}</td>
                                 <td>
-                                    @if ($item->image)
-                                        <img src="{{ asset('images/products/'. $item->image) }}" alt="Product Image"
-                                            width="80">
-                                    @endif
+
+                                    @foreach ($item->images1 as $image)
+                                        <img src="{{ asset('images/products/' . $image->image) }}" alt="Product Image"
+                                            style="width: 100px; height: 80px;">
+                                    @endforeach
                                 </td>
                                 <td>
                                     <a href="{{ url('admin/products/' . $item->id . '/edit') }}"

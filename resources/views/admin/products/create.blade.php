@@ -15,7 +15,7 @@
                     <form action="{{url('admin/products')}}" method="POST" enctype="multipart/form-data" >
                     @csrf
 
-                    {{-- <div class="mb-3">
+                    <div class="mb-3">
                         <label for="">Select Category</label>
                         <select name="category_id" class="form-control">
                             @foreach ($categories as $item)
@@ -23,18 +23,18 @@
 
                             @endforeach
                         </select>
-                    </div> --}}
+                    </div>
 
         {{-- CHECKBOX SELECTED CATEGORIES --}}
 
-            <div class="mb-3">
+            {{-- <div class="mb-3">
             <label>Select Category</label><br>
             @foreach ($categories as $item)
                 <label class="form-check-label">
                 <input class="form-check-input" type="checkbox" name="categories[]" value="{{$item->id}}"> {{$item->name}}
                 </label>&nbsp;&nbsp;
             @endforeach
-            </div>
+            </div> --}}
 
             <input type="hidden" name="category_id" value="{{ $categories->first()->id }}">
 

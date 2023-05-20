@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Str;
@@ -8,13 +7,12 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\Image;
 
-
 class ProductController extends Controller
 {
     public function index()
     {
         $products = Product::all();
-        return view('admin.products.index', compact('products'));
+        return view('admin.products.index')->with('products', $products);
     }
 
     public function create()
@@ -27,32 +25,25 @@ class ProductController extends Controller
     {
         $category = Category::findOrFail($request->category_id);
         $product = new Product;
-        $product->id = $request->id;
         $product->name = $request->name;
         $product->slug = Str::slug($request->slug);
         $product->price = $request->price;
-
-
-        if($request->hasFile("images"))
-        {
-            $files = $request->file("images");
-            foreach($files as $file){
-                $imagename = time() . '_' . $file->getClientOriginalName();
-                $request['product_id']=$product->id;
-                $request['image']=$imagename;
-                $file->move(public_path('images/products'), $imagename);
-                Image::create($request->all());
-            }
-        }
-
         $product->category()->associate($category);
         $product->save();
 
-        return redirect('admin/products')->with('message', 'Product added successfully.');
-    }
+        if ($request->hasFile("images")) {
+            $files = $request->file("images");
+            foreach ($files as $file) {
+                $imageName = time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('images/products'), $imageName);
+                Image::create([
+                    'product_id' => $product->id,
+                    'image' => $imageName
+                ]);
+            }
+        }
 
-    public function images(){
-        return $this->hasMany(Image::class);
+        return redirect('admin/products')->with('message', 'Product added successfully.');
     }
 
     public function edit($product_id)
@@ -66,30 +57,37 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($product_id);
         $category = Category::findOrFail($request->category_id);
-
         $product->name = $request->name;
         $product->slug = Str::slug($request->slug);
         $product->price = $request->price;
-
-        // Check if an image is uploaded
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $fileName = time() . '_' . $image->getClientOriginalName();
-            $image->move(public_path('images/products'), $fileName);
-
-            // Delete old image if it exists
-            if ($product->image) {
-                $oldImagePath = public_path('images/products/' . $product->image);
-                if (file_exists($oldImagePath)) {
-                    unlink($oldImagePath);
-                }
-            }
-
-            $product->image = $fileName;
-        }
-
         $product->category()->associate($category);
         $product->save();
+
+        // Delete old images if necessary
+        if ($request->has('delete_images')) {
+            $deleteImages = $request->input('delete_images');
+            foreach ($deleteImages as $imageId) {
+                $image = Image::findOrFail($imageId);
+                $imagePath = public_path('images/products/' . $image->image);
+                if (file_exists($imagePath)) {
+                    unlink($imagePath);
+                }
+                $image->delete();
+            }
+        }
+
+        // Update existing images and add new images
+        if ($request->hasFile('images')) {
+            $images = $request->file('images');
+            foreach ($images as $image) {
+                $imageName = time() . '_' . $image->getClientOriginalName();
+                $image->move(public_path('images/products'), $imageName);
+                Image::create([
+                    'product_id' => $product->id,
+                    'image' => $imageName
+                ]);
+            }
+        }
 
         return redirect('admin/products')->with('message', 'Product updated successfully.');
     }
@@ -97,6 +95,9 @@ class ProductController extends Controller
     public function destroy($product_id)
     {
         $product = Product::find($product_id);
+
+        // Delete associated images if they exist
+        $product->images()->delete();
 
         // Delete product image if it exists
         if ($product->image) {
@@ -111,3 +112,4 @@ class ProductController extends Controller
         return redirect()->back()->with('message', 'Product deleted successfully.');
     }
 }
+

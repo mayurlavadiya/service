@@ -58,6 +58,10 @@ class Product extends Model
         $this->attributes[$attributeName] = $uploadedImages;
     }
 
+    public function images1(){
+        return $this->hasMany(Image::class);
+    }
+
     /**
      * Get the full URL for the images attribute.
      *

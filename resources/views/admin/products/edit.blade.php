@@ -52,13 +52,17 @@
 
                         <div class="mb-3">
                             <label for="">Product Image</label>
-                            <input type="file" name="image" class="form-control">
-                            @if ($product->image)
+                            <input type="file" name="images[]" class="form-control" multiple >
+                            @foreach ($product->images1 as $image)
+                            <img src="{{ asset('images/products/' . $image->image) }}"
+                                 alt="Product Image"
+                                 style="width: 100px; height: 100px;" class="mt-2">
+                        @endforeach
+                            {{-- @if ($product->image)
                                 <img class="mt-3" src="{{ asset('images/products/' . $product->image) }}" alt="{{ $product->name }}"
-                                    style="max-height: 200px;">
-                            @endif
+                                    style="max-height: 200px;" >
+                            @endif --}}
                         </div>
-
 
                         <div class="mb-3">
                             <button type="submit" class="btn btn-primary">Update</button>
