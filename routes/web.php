@@ -40,7 +40,6 @@ Route::prefix('admin')->group( function(){
         Route::get('category/{id}/edit','edit');
         Route::put('category/{id}','update');
         Route::get('category/{category}/delete','destroy');
-
     });
 
     Route::controller(ProductController::class)->group(function () {
@@ -50,6 +49,7 @@ Route::prefix('admin')->group( function(){
         Route::get('products/{product}/edit','edit');
         Route::put('products/{product}','update');
         Route::get('products/{product}/delete','destroy');
+        Route::put('/deleteimage/{id}','deleteimage');
     });
 });
 

@@ -27,15 +27,18 @@
                         @foreach ($products as $item)
                             <tr>
                                 <td>{{ $item->id }}</td>
-                                <td>{{ $item->category->name }}</td>
+                                <td>
+                                    @foreach ($item->categories as $category)
+                                        {{ $category->name }}<br>
+                                    @endforeach
+                                </td>
                                 <td>{{ $item->name }}</td>
                                 <td>{{ $item->price }}</td>
                                 <td>
-
-                                    @foreach ($item->images1 as $image)
-                                        <img src="{{ asset('images/products/' . $image->image) }}" alt="Product Image"
-                                            style="width: 100px; height: 80px;">
+                                    @foreach ($item->images ?? [] as $image)
+                                    <img src="{{ asset('/images/products/'. $image->image) }}" alt="Product Image" style="width: 100px; height: 80px;">
                                     @endforeach
+
                                 </td>
                                 <td>
                                     <a href="{{ url('admin/products/' . $item->id . '/edit') }}"
@@ -52,3 +55,4 @@
         </div>
     </div>
 </div>
+
