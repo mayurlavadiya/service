@@ -96,8 +96,6 @@ class ProductController extends Controller
     return redirect('admin/products')->with('message', 'Product updated successfully.');
 }
 
-
-
     public function destroy($product_id)
     {
         $product = Product::findOrFail($product_id);
