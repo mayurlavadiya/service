@@ -1,8 +1,10 @@
 @include('frontend.layouts.header')
 <style>
     .AClass {
-        right: -2px;
+        right: -17px;
+        margin: -5px;
         position: absolute;
+        color: red;
     }
 </style>
 <div class="container mt-5">
@@ -19,7 +21,7 @@
                 </div>
 
                 <div class="card-body">
-                    <form action="{{ url('admin/products/'.$product->id) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ url('admin/products/'.$product->id) }}" method="POST" enctype="multipart/form-data" id="myform">
                         {{-- <form action="{{ url('admin/products') }}" method="POST" enctype="multipart/form-data"> --}}
 
                         @csrf
@@ -35,6 +37,8 @@
                                     {{ $item->name }}
                                 </label>&nbsp;&nbsp;
                             @endforeach
+                        <div id="agree_chk_error" class="text-danger"></div> <!-- Error message -->
+
                         </div>
 
                         <div class="mb-3">
@@ -76,4 +80,27 @@
     </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $("#myform").on("submit", function(e) {
+            if (!$("input[name='categories[]']:checked").length) {
+                e.preventDefault();
+                $("#agree_chk_error").text("Please select at least one category.").show();
+            } else {
+                $("#agree_chk_error").hide();
+            }
+        });
+
+        $(".AClass").click(function() {
+            var imageId = $(this).data("image-id");
+            $(this).parent().remove();
+
+            if (imageId) {
+                var deleteInput = $("<input>").attr("type", "hidden").attr("name", "deleted_images[]").val(imageId);
+                $("#myform").append(deleteInput);
+            }
+        });
+    });
+</script>
 

@@ -56,3 +56,12 @@
     </div>
 </div>
 
+{{-- edit blade --}}
+{{-- <div class="row space-between mt-3">
+                                @foreach ($product->images ?? [] as $image)
+                                <img src="{{ asset('images/products/' . $image->image) }}" alt="Product Image"
+                                style="width: 200px; height: 150px;" class="img-responsive">
+                                <a href="#" wire:click.prevent='deleteimage({{$image->id}})'>
+                                <i class="fa fa-times text-danger mr-4"></i></a>
+                                @endforeach
+                            </div> --}}
