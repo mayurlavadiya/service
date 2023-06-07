@@ -46,7 +46,6 @@ class ProductController extends Controller
                 ]);
             }
         }
-
         return redirect('admin/products')->with('message', 'Product added successfully.');
     }
 
@@ -59,42 +58,94 @@ class ProductController extends Controller
         return view('admin.products.edit', compact('categories', 'product', 'images'));
     }
 
+//     public function update(Request $request, $product_id)
+// {
+//     // Retrieve the product
+//     $product = Product::findOrFail($product_id);
+
+//     // Validate the form data
+//     $validatedData = $request->validate([
+//         'name' => 'required',
+//         'price' => 'required|numeric',
+//         'categories' => 'array',
+//         'categories.*' => 'exists:categories,id',
+//         'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+//     ]);
+
+//     // Update the product details
+//     $product->name = $request->input('name');
+//     $product->price = $request->input('price');
+//     $product->save();
+
+//     // categories
+//     $selectedCategories = $request->input('categories', []);
+//     $product->categories()->sync($selectedCategories);
+
+//     // Delete old images
+//     if ($request->has('deleted_images')) {
+//         $deletedImages = $request->input('deleted_images');
+//         foreach ($deletedImages as $imageId) {
+//             $image = Image::findOrFail($imageId);
+//             $imagePath = public_path('images/products/' . $image->image);
+//             if (file_exists($imagePath)) {
+//                 File::delete($imagePath);
+//             }
+//             $image->delete();
+//         }
+//     }
+
+//     // Upload and store new images
+//     if ($request->hasFile('images')) {
+//         $images = $request->file('images');
+//         foreach ($images as $image) {
+//             $imageName = time() . '_' . $image->getClientOriginalName();
+//             $image->move(public_path('images/products'), $imageName);
+//             Image::create([
+//                 'product_id' => $product->id,
+//                 'image' => $imageName
+//             ]);
+//         }
+//     }
+
+//     return redirect('admin/products')->with('message', 'Product updated successfully.');
+// }
+
     public function update(Request $request, $product_id)
-{
-    $product = Product::findOrFail($product_id);
-    $selectedCategories = $request->input('categories', []);
-    $product->name = $request->input('name');
-    $product->slug = Str::slug($request->input('name'));
-    $product->price = $request->input('price');
-    $product->save();
-    $product->categories()->sync($selectedCategories);
+    {
+        $product = Product::findOrFail($product_id);
+        $selectedCategories = $request->input('categories', []);
+        $product->name = $request->input('name');
+        $product->slug = Str::slug($request->input('name'));
+        $product->price = $request->input('price');
+        $product->save();
+        $product->categories()->sync($selectedCategories);
 
-    if ($request->has('delete_images')) {
-        $deleteImages = $request->input('delete_images');
-        foreach ($deleteImages as $imageId) {
-            $image = Image::findOrFail($imageId);
-            $imagePath = public_path('images/products/' . $image->image);
-            if (file_exists($imagePath)) {
-                File::delete($imagePath);
+        if ($request->has('delete_images')) {
+            $deleteImages = $request->input('delete_images');
+            foreach ($deleteImages as $imageId) {
+                $image = Image::findOrFail($imageId);
+                $imagePath = public_path('images/products/' . $image->image);
+                if (file_exists($imagePath)) {
+                    File::delete($imagePath);
+                }
+                $image->delete();
             }
-            $image->delete();
         }
-    }
 
-    if ($request->hasFile('images')) {
-        $images = $request->file('images');
-        foreach ($images as $image) {
-            $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->move(public_path('images/products'), $imageName);
-            Image::create([
-                'product_id' => $product->id,
-                'image' => $imageName
-            ]);
+        if ($request->hasFile('images')) {
+            $images = $request->file('images');
+            foreach ($images as $image) {
+                $imageName = time() . '_' . $image->getClientOriginalName();
+                $image->move(public_path('images/products'), $imageName);
+                Image::create([
+                    'product_id' => $product->id,
+                    'image' => $imageName
+                ]);
+            }
         }
-    }
 
-    return redirect('admin/products')->with('message', 'Product updated successfully.');
-}
+        return redirect('admin/products')->with('message', 'Product updated successfully.');
+    }
 
     public function destroy($product_id)
     {
@@ -115,14 +166,14 @@ class ProductController extends Controller
         return redirect()->back()->with('message', 'Product deleted successfully.');
     }
 
-    public function deleteimage($id)
-    {
-        $image = Image::findOrFail($id);
-        if (File::exists(public_path('images/products/' . $image->image))) {
-            File::delete(public_path('images/products/' . $image->image));
-        }
-        $image->delete();
+    // public function deleteimage($id)
+    // {
+    //     $image = Image::findOrFail($id);
+    //     if (File::exists(public_path('images/products/' . $image->image))) {
+    //         File::delete(public_path('images/products/' . $image->image));
+    //     }
+    //     $image->delete();
 
-        return back();
-    }
+    //     return back();
+    // }
 }
