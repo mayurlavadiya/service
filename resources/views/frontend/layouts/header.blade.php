@@ -59,10 +59,21 @@
                                   <div class="dropdown-menu">
                                     <a class="dropdown-item" href="{{url('/admin/category/')}}">Category</a>
                                     <a class="dropdown-item" href="{{url('/admin/products/')}}">Product</a>
-                                    {{-- <a class="dropdown-item" href="{{url('/add')}}">Add Product</a>
-                                    <a class="dropdown-item" href="{{url('/update')}}">Update Product</a> --}}
                                   </div>
                                 </li>
+
+                                <!-- Dropdown -->
+                                <li class="dropdown">
+                                  <a class="dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown" >
+                                    Login
+                                  </a>
+                                  <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="{{url('/auth/login/')}}">Login</a>
+                                    <a class="dropdown-item" href="{{url('register')}}">Register</a>
+
+                                  </div>
+                                </li>
+
                             </ul>
                           </div>
                     </div>

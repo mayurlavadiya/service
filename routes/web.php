@@ -9,6 +9,7 @@ use App\Http\Controllers\Frontend\ContactController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\AuthController;
 
 
 /*
@@ -22,15 +23,20 @@ use App\Http\Controllers\ProductController;
 |
 */
 
+Route::get('/', function(){
+    return view('welcome');
+});
+
+
+Route::get('login',[AuthController::class,'index'])->name('login');
+Route::get('register',[AuthController::class,'register_view'])->name('register');
+
+
 Route::get('/',[HomeController::class,'index']);
 Route::get('/about',[AboutController::class,'index']);
 Route::get('/contact',[ContactController::class,'index']);
 Route::get('/course',[CourseController::class,'index']);
 Route::get('/service',[ServiceController::class,'index']);
-
-Route::get('/add',[CustomerController::class,'add']);
-Route::get('/view',[CustomerController::class,'index']);
-Route::get('/update',[CustomerController::class,'update']);
 
 Route::prefix('admin')->group( function(){
     Route::controller(CategoryController::class)->group(function () {
@@ -51,6 +57,8 @@ Route::prefix('admin')->group( function(){
         Route::get('products/{product}/delete','destroy');
         Route::put('/deleteimage/{id}','deleteimage');
     });
+
+
 });
 
 Route::get('/upload', function(){
