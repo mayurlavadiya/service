@@ -68,8 +68,8 @@
                                     Login
                                   </a>
                                   <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="{{url('/auth/login/')}}">Login</a>
-                                    <a class="dropdown-item" href="{{url('register')}}">Register</a>
+                                    <a class="dropdown-item" href="{{ url('login') }}">Login</a>
+                                    <a class="dropdown-item" href="{{ url('register') }}">Register</a>
 
                                   </div>
                                 </li>
